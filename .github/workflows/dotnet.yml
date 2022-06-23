@@ -20,7 +20,7 @@ jobs:
         dotnet-version: 6.0.x
         
     - name: Restore dependencies
-      run: cd Soft && dotnet restore
+      run: cd Soft && dotnet workload restore
       
     - name: Build
       run: dotnet build -c Release --no-restore

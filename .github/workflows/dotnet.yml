@@ -19,6 +19,9 @@ jobs:
       with:
         dotnet-version: 6.0.x
         
+    - name: Setup MAUI
+      run: sudo dotnet workload install maui --source https://api.nuget.org/v3/index.json
+        
     - name: Restore dependencies
       run: cd Soft && dotnet workload restore
       

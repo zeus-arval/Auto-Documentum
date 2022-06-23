@@ -18,8 +18,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Install dependencies
-      run: sudo apt-get install dotnet
-           dotnet workload install maui --from-rollback-file https://aka.ms/dotnet/maui/preview.10.json
+      run: sudo apt-get install dotnet && dotnet workload install maui --from-rollback-file https://aka.ms/dotnet/maui/preview.10.json
     - name: Build
       run: cd Soft && dotnet build --no-restore
     - name: Test

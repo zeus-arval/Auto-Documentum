@@ -21,12 +21,9 @@ jobs:
         
     - name: Setup MAUI
       run: sudo dotnet workload install maui --source https://api.nuget.org/v3/index.json
-        
-    - name: Setup certificate
-      run: dotnet dev-certs https --trust
       
     - name: Restore dependencies
-      run: cd Soft && dotnet workload restore
+      run: cd Soft && sudo dotnet workload restore
       
     - name: Build
       run: cd Soft && dotnet build

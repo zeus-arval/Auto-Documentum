@@ -23,7 +23,7 @@ jobs:
       run: cd Soft && dotnet workload restore
       
     - name: Build
-      run: cd Soft && dotnet build -c Release --no-restore
+      run: cd Soft && dotnet build --no-restore
       
     - name: Test
-      run: cd Soft && dotnet test -c Release --no-build --verbosity normal --filter "Category!=LongRunning"
+      run: cd Soft && dotnet test --no-build --verbosity normal 

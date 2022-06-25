@@ -26,4 +26,4 @@ jobs:
       run: cd Soft && sudo dotnet workload restore
       
     - name: Test
-      run: cd Soft && dotnet test --no-build --verbosity normal 
+      run: cd Soft && dotnet test --verbosity normal 

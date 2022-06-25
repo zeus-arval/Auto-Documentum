@@ -25,8 +25,5 @@ jobs:
     - name: Restore dependencies
       run: cd Soft && sudo dotnet workload restore
       
-    - name: Build
-      run: cd Soft && dotnet build
-      
     - name: Test
       run: cd Soft && dotnet test --no-build --verbosity normal 

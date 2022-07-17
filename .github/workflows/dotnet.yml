@@ -18,12 +18,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
-        
-    - name: Setup MAUI
-      run: sudo dotnet workload install maui --source https://api.nuget.org/v3/index.json
       
-    - name: Restore dependencies
-      run: cd Soft && sudo dotnet workload restore
+    - name: Restore dependencies in .Net Project
+      run: cd src/Soft && sudo dotnet workload restore
       
-    - name: Test
-      run: cd Soft && dotnet test --no-build --verbosity normal 
+    - name: Test .Net Project
+      run: cd src/Soft && dotnet test --no-build --verbosity normal 

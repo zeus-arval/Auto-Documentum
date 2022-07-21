@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
 
-namespace AD.Soft.FilesManager
+namespace AD.FilesManager
 {
-    internal class FileReader
+    public class FileReader
     {
         private class EmptyFileException : Exception
         {
@@ -18,7 +16,7 @@ namespace AD.Soft.FilesManager
             _logger = logger;    
         }
 
-        public string ReadFile(in string filePath)
+        public string ReadFile(in string filePath, Action<string> action)
         {
             try
             {
@@ -26,17 +24,24 @@ namespace AD.Soft.FilesManager
 
                 using (StreamReader reader = new(filePath))
                 {
-                    string? fileLine = null;
 
+                    string? fileLine = null;
+                    int linesCount = 0;
+                    
                     while ((fileLine = reader.ReadLine()) != null)
                     {
+                        if (fileLine.Trim() == String.Empty)
+                        {
+                            continue;
+                        }
+
                         if (fileLine.IsNormalized())
                         {
-                            fileContent = fileLine.Trim();
+                            Validate(fileLine, ref linesCount, action);
                         }
                     }
 
-                    if (fileContent == string.Empty)
+                    if (linesCount == 0)
                     {
                         throw new EmptyFileException(filePath);
                     }
@@ -59,6 +64,12 @@ namespace AD.Soft.FilesManager
                 _logger.LogError("Couldn't read a file. ", ex.Message);
                 return string.Empty;
             }
+        }
+
+        private void Validate(string fileLine, ref int linesCount, Action<string> action)
+        {
+            action(fileLine);
+            linesCount++;
         }
     }
 }

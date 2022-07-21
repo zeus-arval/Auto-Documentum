@@ -1,4 +1,4 @@
-﻿namespace AD.Soft.FilesManager
+﻿namespace AD.FilesManager
 {
     internal class FilesValidator
     {

@@ -37,7 +37,7 @@ namespace AD.FilesManager
 
                         if (fileLine.IsNormalized())
                         {
-                            Validate(fileLine, ref linesCount, action);
+                            Validate(fileLine, ref linesCount);
                         }
                     }
 
@@ -66,9 +66,9 @@ namespace AD.FilesManager
             }
         }
 
-        private void Validate(string fileLine, ref int linesCount, Action<string> action)
+        private void Validate(string fileLine, ref int linesCount)
         {
-            action(fileLine);
+
             linesCount++;
         }
     }

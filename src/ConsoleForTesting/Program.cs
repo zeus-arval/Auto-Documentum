@@ -1,12 +1,18 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using AD.Soft.FilesManager;
-using Microsoft.Extensions.Logging;
+using AD.FilesManager;
+using AD.Factories;
 
-Console.WriteLine("Hello, World!");
-LoggerFactory factory = new LoggerFactory();
+var mainFactory = new MainFactory();
 
+FileReader reader = new FileReader(mainFactory.CreateLogger<FileReader>());
 
-FileReader reader = new FileReader(LoggerFactoryExtensions.CreateLogger<FileReader>(factory);
+string filePath = @"C:\Users\a.valdna\source\repos\LearningTasks\Attributes\Program.cs";
+reader.ReadFile(filePath, (line) => {
+    Console.WriteLine(line);
+});
 
-string filePath = "";
-reader.ReadFile(filePath);
+FilesController controller = new FilesController(mainFactory.CreateLogger<FilesController>());
+
+string filePattern = "*.cs";
+
+controller.ReturnFilePathArray(@"C:\Users\a.valdna\source\repos\Bank\Bank", filePattern);

@@ -23,4 +23,4 @@ jobs:
       run: cd src/Soft && sudo dotnet workload restore
       
     - name: Test .Net Project
-      run: cd src && dotnet test
+      run: cd src/Tests && dotnet test

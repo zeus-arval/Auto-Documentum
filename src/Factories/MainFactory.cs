@@ -15,5 +15,10 @@ namespace AD.Factories
         {
             return (ILogger<T>)_loggerFactory.Create<T>();
         }
+
+        public ILogger<T> CreateStubLogger<T>()
+        {
+            return (ILogger<T>)_loggerFactory.CreateForTest<T>();
+        }
     }
 }

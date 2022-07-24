@@ -36,7 +36,7 @@ namespace Tests.FilesManager
 
         private Queue<string>? fileLineQueue;
         private FileReaderMock _fileReader;
-        private const string TEST_DIRECTORY_PATH = @"..\..\..\TestCases\";
+        private readonly string TEST_DIRECTORY_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\TestCases\");
 
         [SetUp]
         public void SetUp()

@@ -1,6 +1,7 @@
 ﻿using AD.Factories;
 using AD.FilesManager;
 using Microsoft.Extensions.Logging;
+using Tests.TestHelper;
 
 namespace Tests.FilesManager
 {
@@ -36,7 +37,7 @@ namespace Tests.FilesManager
 
         private Queue<string>? fileLineQueue;
         private FileReaderMock _fileReader;
-        private readonly string TEST_DIRECTORY_PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\TestCases\");
+        private string TEST_DIRECTORY_PATH = AppDomain.CurrentDomain.BaseDirectory.GetDirectoryParentPath( 3).GoToChildsDirectory("TestCases") ;
 
         [SetUp]
         public void SetUp()
@@ -66,7 +67,7 @@ namespace Tests.FilesManager
         [TestCase(@"TestFile.txt", TestName = "Test File Reading")]
         public void TestReadFile(string filePath, Type? exceptionType = null)
         {
-            string fullPath = TEST_DIRECTORY_PATH + filePath;
+            string fullPath = TEST_DIRECTORY_PATH.GoToChildsDirectory(filePath);
             if (exceptionType is null)
             {
                 fileLineQueue = new(ReturnTestFileLines());

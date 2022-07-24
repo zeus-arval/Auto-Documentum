@@ -36,7 +36,7 @@ namespace Tests.FilesManager
 
         private Queue<string>? fileLineQueue;
         private FileReaderMock _fileReader;
-        private const string TEST_DIRECTORY_PATH = @"C:\Users\a.valdna\source\repos\Auto-Documentum\src\Tests\TestCases\";
+        private const string TEST_DIRECTORY_PATH = @"..\..\..\TestCases\";
 
         [SetUp]
         public void SetUp()

@@ -61,9 +61,9 @@ namespace Tests.FilesManager
             }
         }
 
-        [TestCase(@"WrongFile.cs", typeof(FileNotFoundException), TestName = "Wrong File Reading")]
-        [TestCase(@"TestEmptyFile.cs", typeof(FileReader.EmptyFileException), TestName = "Empty File Reading")]
-        [TestCase(@"TestFile.cs", TestName = "Test File Reading")]
+        [TestCase(@"WrongFile.txt", typeof(FileNotFoundException), TestName = "Wrong File Reading")]
+        [TestCase(@"TestEmptyFile.txt", typeof(FileReader.EmptyFileException), TestName = "Empty File Reading")]
+        [TestCase(@"TestFile.txt", TestName = "Test File Reading")]
         public void TestReadFile(string filePath, Type? exceptionType = null)
         {
             string fullPath = TEST_DIRECTORY_PATH + filePath;

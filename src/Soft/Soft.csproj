@@ -11,7 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AD\" />
+    <Compile Remove="AD\**" />
+    <EmbeddedResource Remove="AD\**" />
+    <None Remove="AD\**" />
+    <Page Remove="AD\**" />
   </ItemGroup>
 
   <ItemGroup>

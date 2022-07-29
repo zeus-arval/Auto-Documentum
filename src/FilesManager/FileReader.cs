@@ -16,36 +16,35 @@ namespace AD.FilesManager
             _logger = logger;
         }
 
-        public void ReadFile(in string filePath)
+        public FileContext ReadFile(in string filePath)
         {
             try
             {
-                ReadFileImpl(filePath);
+                return ReadFileImpl(filePath);
             }
             catch(EmptyFileException ex)
             {
                 _logger.LogError(ex.Message);
-                return;
+                return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
             catch (FileNotFoundException ex) 
             {
                 _logger.LogError("Wrong file path [{filePath}]. ", ex.Message);
-                return;
+                return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Couldn't read a file. ", ex.Message);
-                return;
+                return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
         }
 
-        protected virtual void ReadFileImpl(in string filePath)
+        protected virtual FileContext ReadFileImpl(in string filePath)
         {
             string fileContent = string.Empty;
 
             using (StreamReader reader = new(filePath))
             {
-
                 string? fileLine = null;
                 int linesCount = 0;
 
@@ -58,7 +57,9 @@ namespace AD.FilesManager
 
                     if (fileLine.IsNormalized())
                     {
-                        Validate(fileLine, ref linesCount);
+                        Validate(ref fileLine);
+                        fileContent += fileLine;
+                        linesCount++;
                     }
                 }
 
@@ -66,27 +67,12 @@ namespace AD.FilesManager
                 {
                     throw new EmptyFileException(filePath);
                 }
+
+                return new FileContext(fileContent, string.Empty, filePath, -1);
             };
         }
 
-        private void Validate(string fileLine, ref int linesCount)
-        {
-            FileLineEventArgs args = new FileLineEventArgs(fileLine);
-            OnFileLineSent(args);
-            linesCount++;
-        }
-
-        private void OnFileLineSent(FileLineEventArgs e)
-        {
-            EventHandler<FileLineEventArgs>? handler = FileLineSent ?? null; 
-
-            if (handler != null)
-            {
-                handler!(this, e);
-            }
-        }
-
-        public event EventHandler<FileLineEventArgs>? FileLineSent;
+        protected virtual void Validate(ref string stringLine) { }
     }
 
     public class FileLineEventArgs : EventArgs

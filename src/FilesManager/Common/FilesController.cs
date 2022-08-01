@@ -1,18 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace AD.FilesManager
+namespace AD.FilesManager.Common
 {
     public class FilesController
     {
         private readonly ILogger _logger;
-        public FilesController(ILogger<FilesController> logger) 
-        { 
+        public FilesController(ILogger<FilesController> logger)
+        {
             _logger = logger;
         }
 
         public IEnumerable<string> ReturnFilePathArray(in string directoryPath, in string fileFormatPattern)
         {
-            if(Directory.Exists(directoryPath) == false)
+            if (Directory.Exists(directoryPath) == false)
             {
                 _logger.LogWarning($"Directory [{directoryPath}] doesn't exist");
                 return Array.Empty<string>();
@@ -23,7 +23,7 @@ namespace AD.FilesManager
             var files = Directory.GetFiles(directoryPath, fileFormatPattern, SearchOption.AllDirectories);
             filePathsList.AddRange(files);
 
-            foreach(var fileName in filePathsList)
+            foreach (var fileName in filePathsList)
             {
                 _logger.LogInformation($"File = {fileName}");
             }

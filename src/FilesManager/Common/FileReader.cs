@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace AD.FilesManager
+namespace AD.FilesManager.Common
 {
     public class FileReader
     {
         public class EmptyFileException : Exception
         {
-            public EmptyFileException(in string fileName) : base(String.Format("File {0} is empty", fileName)) { }
+            public EmptyFileException(in string fileName) : base(string.Format("File {0} is empty", fileName)) { }
         }
 
         private readonly ILogger<FileReader> _logger;
@@ -22,12 +22,12 @@ namespace AD.FilesManager
             {
                 return ReadFileImpl(filePath);
             }
-            catch(EmptyFileException ex)
+            catch (EmptyFileException ex)
             {
                 _logger.LogError(ex.Message);
                 return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
-            catch (FileNotFoundException ex) 
+            catch (FileNotFoundException ex)
             {
                 _logger.LogError("Wrong file path [{filePath}]. ", ex.Message);
                 return new FileContext(string.Empty, ex.Message, filePath, -1);
@@ -50,7 +50,7 @@ namespace AD.FilesManager
 
                 while ((fileLine = reader.ReadLine()) != null)
                 {
-                    if (fileLine.Trim() == String.Empty)
+                    if (fileLine.Trim() == string.Empty)
                     {
                         continue;
                     }

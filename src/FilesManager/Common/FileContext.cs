@@ -1,4 +1,4 @@
-﻿namespace AD.FilesManager
+﻿namespace AD.FilesManager.Common
 {
     public class FileContext
     {

@@ -6,7 +6,7 @@ namespace AD.FilesManager.Common
     {
         public class EmptyFileException : Exception
         {
-            public EmptyFileException(in string fileName) : base(string.Format("File {0} is empty", fileName)) { }
+            public EmptyFileException(in string fileName) : base(string.Format(ErrorMessages.EMPTY_FILE_EXCEPTION, fileName)) { }
         }
 
         private readonly ILogger<FileReader> _logger;
@@ -29,12 +29,12 @@ namespace AD.FilesManager.Common
             }
             catch (FileNotFoundException ex)
             {
-                _logger.LogError("Wrong file path [{filePath}]. ", ex.Message);
+                _logger.LogError(ErrorMessages.WRONG_FILE_PATH_EXCEPTION, ex.Message);
                 return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Couldn't read a file. ", ex.Message);
+                _logger.LogError(ErrorMessages.FAILED_TO_READ_FILE, filePath, ex.Message);
                 return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
         }

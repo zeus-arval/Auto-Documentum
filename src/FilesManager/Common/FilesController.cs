@@ -10,6 +10,11 @@ namespace AD.FilesManager.Common
             _logger = logger;
         }
 
+        /// <summary>
+        /// Returns Array of C# files' paths
+        /// </summary>
+        /// <param name="fileFormatPattern">Format of files, which are being searched</param>
+        /// <returns></returns>
         public IEnumerable<string> ReturnFilePathArray(in string directoryPath, in string fileFormatPattern)
         {
             if (Directory.Exists(directoryPath) == false)

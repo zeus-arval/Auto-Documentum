@@ -132,12 +132,6 @@ namespace AD.FilesManager.CSharp.Extensions
             return true;
         }
 
-        internal static bool TryGetFieldDeclarationSyntaxis(ClassDeclarationSyntax classSyntax, out List<FieldDeclarationSyntax> fieldSyntaxis)
-        {
-            fieldSyntaxis = classSyntax.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
-            return fieldSyntaxis.Any();
-        }
-
         internal static bool TryGetNameSpaceSyntaxis(SyntaxTree syntaxTree, out List<NamespaceDeclarationSyntax> namespaces)
         {
             namespaces = new List<NamespaceDeclarationSyntax>();
@@ -154,43 +148,91 @@ namespace AD.FilesManager.CSharp.Extensions
             return namespaces.Count > 0;
         }
 
-        internal static bool TryGetCSharpField(FieldDeclarationSyntax fieldDeclarationSyntax, out CSharpField[] fieldArray)
+        internal static CSharpField[] GetCSharpFieldArray(ClassDeclarationSyntax classSyntax)
         {
-            if (fieldDeclarationSyntax is null)
+            var fieldSyntaxis = classSyntax.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
+
+            if (fieldSyntaxis.Count() == 0)
             {
-                fieldArray = Array.Empty<CSharpField>();
-                return false;
+                return Array.Empty<CSharpField>();
             }
 
-            string? fieldType = null;
+            CSharpField[] fieldArray = new CSharpField[fieldSyntaxis.Count()];
 
-            if (fieldDeclarationSyntax.Declaration.Type is ArrayTypeSyntax arraySyntax)
+            for (int i = 0; i < fieldSyntaxis.Count; i++)
             {
-                fieldType = (arraySyntax.ElementType as PredefinedTypeSyntax)?.Keyword.Text;
-            }
-            else if (fieldDeclarationSyntax.Declaration.Type is PredefinedTypeSyntax predefinedSyntax)
-            {
-                fieldType = predefinedSyntax.Keyword.Text;
-            }
+                string? fieldType = null;
 
-            var variables = fieldDeclarationSyntax.Declaration.Variables;
-            fieldArray = new CSharpField[variables.Count];
+                VariableDeclarationSyntax? fieldDeclaration = fieldSyntaxis[i].Declaration;
 
-            for (int variableNum = 0; variableNum < variables.Count; variableNum++)
-            {
-                string? fieldName = variables[variableNum].Identifier.Text; 
-                
-                if (fieldType is null || fieldName is null)
+                if (fieldDeclaration.Type is ArrayTypeSyntax arraySyntax)
                 {
-                    fieldArray = Array.Empty<CSharpField>();
-                    return false;
+                    fieldType = (arraySyntax.ElementType as PredefinedTypeSyntax)?.Keyword.Text;
+                }
+                else if (fieldDeclaration.Type is PredefinedTypeSyntax predefinedSyntax)
+                {
+                    fieldType = predefinedSyntax.Keyword.Text;
                 }
 
-                //TODO Description of field needs to be taken as well
-                fieldArray[variableNum] = new CSharpField(fieldType, fieldName, string.Empty);
+                var variables = fieldDeclaration.Variables;
+                fieldArray = new CSharpField[variables.Count];
+
+                for (int variableNum = 0; variableNum < variables.Count; variableNum++)
+                {
+                    string? fieldName = variables[variableNum].Identifier.Text; 
+                
+                    if (fieldType is null || fieldName is null)
+                    {
+                        fieldArray = Array.Empty<CSharpField>();
+                        return fieldArray;
+                    }
+
+                    //TODO Description of field needs to be taken as well
+                    fieldArray[variableNum] = new CSharpField(fieldType, fieldName, string.Empty);
+                }
+            }
+            return fieldArray;
+        }
+
+        internal static CSharpProperty[] GetCSharpPropertyArray(ClassDeclarationSyntax classSyntax)
+        {
+            List<PropertyDeclarationSyntax> propertySyntaxis = classSyntax.DescendantNodes().OfType<PropertyDeclarationSyntax>().ToList();
+
+            if (propertySyntaxis.Count() == 0)
+            {
+                return Array.Empty<CSharpProperty>();
             }
 
-            return true;
+            CSharpProperty[] propertyArray = new CSharpProperty[propertySyntaxis.Count()];
+
+            for(int i = 0; i < propertySyntaxis.Count(); i++)
+            {
+                PropertyDeclarationSyntax? propertyDeclaration = propertySyntaxis[i];
+                string? propertyType = null;
+                string? propertyName = propertyDeclaration.Identifier.Text;
+
+                if (propertyDeclaration.Type is PredefinedTypeSyntax typeSyntax)
+                {
+                    propertyType = typeSyntax.Keyword.Text;
+                }
+                else if (propertyDeclaration.Type is ArrayTypeSyntax arrayTypeSyntax && arrayTypeSyntax.ElementType is PredefinedTypeSyntax predefinedSyntax)
+                {
+                    propertyType = $"{predefinedSyntax.Keyword.Text}[]";
+                }
+                else if (propertyDeclaration.Type is IdentifierNameSyntax identifierNameSyntax)
+                {
+                    propertyType = identifierNameSyntax.Identifier.Text;
+                }
+
+                if (propertyType is null || propertyName is null)
+                {
+                    continue;
+                }
+
+                propertyArray[i] = new CSharpProperty(propertyType, propertyName, string.Empty);
+            }
+
+            return propertyArray;
         }
     }
 }

@@ -88,27 +88,10 @@ namespace AD.FilesManager.CSharp
                     throw new Exception("Couldn't get class name");
                 }
 
-                List<CSharpField> fields = GetCSharpFieldArray(classSyntax);
-                
+                CSharpField[] fields = SyntaxNodeHelper.GetCSharpFieldArray(classSyntax);
+                CSharpProperty[] properties = SyntaxNodeHelper.GetCSharpPropertyArray(classSyntax);
                 return null;
                 //succeeded &= SyntaxNodeHelper.TryGetMethods(classSyntax, out CSharpMethod[] methods);
-            }
-
-            private List<CSharpField> GetCSharpFieldArray(in ClassDeclarationSyntax classSyntax)
-            {
-                bool succeeded = SyntaxNodeHelper.TryGetFieldDeclarationSyntaxis(classSyntax, out List<FieldDeclarationSyntax> fields);
-                List<CSharpField> fieldList = new List<CSharpField>();
-
-                for (int i = 0; i < fields.Count; i++)
-                {
-                    succeeded = SyntaxNodeHelper.TryGetCSharpField(fields[i], out CSharpField[] cSharpFields);
-                    if (cSharpFields?.Count() > 0)
-                    {
-                        fieldList.AddRange(cSharpFields!);
-                    }
-                }
-
-                return fieldList;
             }
         }
 

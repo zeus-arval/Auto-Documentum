@@ -1,4 +1,4 @@
-﻿namespace AD.Factories.Common
+﻿namespace AD.Aids.Common
 {
     internal interface IFactory<TItem>
     {

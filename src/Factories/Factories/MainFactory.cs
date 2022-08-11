@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace AD.Factories
+namespace AD.Aids.Factories
 {
     public class MainFactory
     {

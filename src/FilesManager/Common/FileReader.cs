@@ -72,7 +72,13 @@ namespace AD.FilesManager.Common
             };
         }
 
-        protected virtual void Validate(ref string stringLine) { }
+        protected virtual void Validate(ref string stringLine) 
+        {
+            if (stringLine.Contains("//"))
+            {
+                stringLine += "\n";
+            }
+        }
     }
 
     public class FileLineEventArgs : EventArgs

@@ -90,8 +90,38 @@ namespace AD.FilesManager.CSharp
 
                 CSharpField[] fields = SyntaxNodeHelper.GetCSharpFieldArray(classSyntax);
                 CSharpProperty[] properties = SyntaxNodeHelper.GetCSharpPropertyArray(classSyntax);
-                return null;
-                //succeeded &= SyntaxNodeHelper.TryGetMethods(classSyntax, out CSharpMethod[] methods);
+                CSharpMethod[] methods = SyntaxNodeHelper.GetCSharpMethodArray(classSyntax);
+                Log(fields);
+                Log(properties);
+                Log(methods);
+
+                return new CSharpClass(namespaceName!, string.Empty, className, methods, fields, properties);
+            }
+
+            private void Log(CSharpField[] array)
+            {
+                foreach(var field in array)
+                {
+                    _logger.LogInformation("Field Name: {name} Type: {type}", field.Name, field.TypeName);
+                }
+            }
+            private void Log(CSharpProperty[] array)
+            {
+                foreach (var property in array)
+                {
+                    _logger.LogInformation("Property Name: {name} Type: {type}", property.Name, property.TypeName);
+                }
+            }
+            private void Log(CSharpMethod[] array)
+            {
+                foreach (var method in array)
+                {
+                    _logger.LogInformation("Method Name: {name} Type: {type} Params: ", method.Name, method.ReturnType);
+                    foreach(var param in method.Parameters)
+                    {
+                        _logger.LogInformation("Parameter Name: {name} Type: {type}", param.Name, param.TypeName);
+                    }
+                }
             }
         }
 

@@ -12,13 +12,14 @@ namespace AD.FilesManager.CSharp
         public IField[] Fields { get; init; }
         public CSharpProperty[] Properties { get; }
 
-        public CSharpClass(string namespaceName, string description, string name, IMethod[] methods, IField[] fields)
+        public CSharpClass(string namespaceName, string description, string name, IMethod[] methods, IField[] fields, CSharpProperty[] properties)
         {
             NamespaceName = namespaceName;
             Description = description;
             Name = name;
             Methods = methods;
             Fields = fields;
+            Properties = properties;
         }
     }
 }

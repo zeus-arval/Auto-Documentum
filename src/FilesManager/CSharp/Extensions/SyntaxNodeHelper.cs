@@ -50,7 +50,17 @@ namespace AD.FilesManager.CSharp.Extensions
                 try
                 {
                     node = FillParentName(node, out string? parentName);
-                    name = $"{parentName}.{name}";
+
+                    if (parentName == string.Empty || name is null)
+                    {
+                        string nameText = parentName! == string.Empty ? name! : parentName!;
+                        name = $"{nameText}";
+                    }
+                    else
+                    {
+                        name = $"{parentName}.{name}";
+
+                    }
                 } 
                 catch (Exception)
                 {
@@ -200,14 +210,14 @@ namespace AD.FilesManager.CSharp.Extensions
             //TODO check if all kind of properties could be used
             List<PropertyDeclarationSyntax> propertySyntaxis = classSyntax.DescendantNodes().OfType<PropertyDeclarationSyntax>().ToList();
 
-            if (propertySyntaxis.Count() == 0)
+            if (propertySyntaxis.Count == 0)
             {
                 return Array.Empty<CSharpProperty>();
             }
 
-            CSharpProperty[] propertyArray = new CSharpProperty[propertySyntaxis.Count()];
+            CSharpProperty[] propertyArray = new CSharpProperty[propertySyntaxis.Count];
 
-            for(int i = 0; i < propertySyntaxis.Count(); i++)
+            for(int i = 0; i < propertySyntaxis.Count; i++)
             {
                 PropertyDeclarationSyntax? propertyDeclaration = propertySyntaxis[i];
                 string? propertyType = null;
@@ -236,6 +246,67 @@ namespace AD.FilesManager.CSharp.Extensions
             }
 
             return propertyArray;
+        }
+
+        internal static CSharpMethod[] GetCSharpMethodArray(ClassDeclarationSyntax classSyntax)
+        {
+            List<MethodDeclarationSyntax> methodSyntaxis = classSyntax.DescendantNodes().OfType<MethodDeclarationSyntax>().ToList();
+
+            if (methodSyntaxis.Count == 0)
+            {
+                return Array.Empty<CSharpMethod>();
+            }
+
+            CSharpMethod[] methodsArray = new CSharpMethod[methodSyntaxis.Count];
+
+            for(int i = 0; i < methodSyntaxis.Count; i++)
+            {
+                MethodDeclarationSyntax? methodSyntax = methodSyntaxis[i];
+                string? methodName = methodSyntax.Identifier.Text;
+                CSharpParameter[] parameters = GetCSharpParameters(methodSyntax);
+                string? returnType = (methodSyntax.ReturnType as PredefinedTypeSyntax)?.Keyword.Text;
+                if (methodName is null && returnType is null)
+                {
+                    continue;
+                }
+
+                methodsArray[i] = new CSharpMethod(parameters, methodName!, returnType!);
+            }
+            return methodsArray;
+
+        }
+
+        internal static CSharpParameter[] GetCSharpParameters(MethodDeclarationSyntax method)
+        {
+            var parameterSyntaxis = method.ParameterList.Parameters;
+
+            if (parameterSyntaxis.Count == 0)
+            {
+                return Array.Empty<CSharpParameter>();
+            }
+
+            CSharpParameter[] parameters = new CSharpParameter[parameterSyntaxis.Count];
+
+            for (int i = 0; i < parameterSyntaxis.Count; i++)
+            {
+                string parameterName = String.Empty;
+                string parameterType;
+                
+                var parameter = parameterSyntaxis[i];
+                parameterType = parameter.Identifier.Text;
+
+                if (parameter.Type is PredefinedTypeSyntax predefinedSyntax)
+                {
+                    parameterName = predefinedSyntax.Keyword.Text;
+                }
+                else if (parameter.Type is IdentifierNameSyntax identifierSyntax)
+                {
+                    parameterName = identifierSyntax.Identifier.Text;
+                }
+
+                parameters[i] = new CSharpParameter(parameterName, parameterType, string.Empty);
+            }
+            return parameters;
         }
     }
 }

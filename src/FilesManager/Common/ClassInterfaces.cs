@@ -11,7 +11,7 @@
 
     public interface IField
     {
-        public IClass Class { get; }
+        public string TypeName { get; }
         public string Name { get; }
         public string Description { get; }
     }

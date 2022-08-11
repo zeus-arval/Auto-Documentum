@@ -2,16 +2,16 @@
 
 namespace AD.FilesManager.CSharp
 {
-    public class CSharpField : IField
+    internal class CSharpField : IField
     {
         public string Name { get; init; }
         public string Description { get; init; }
 
-        public IClass Class { get; init; }
+        public string TypeName { get; init; }
 
-        public CSharpField(CSharpClass cSharpClass, string name, string description)
+        public CSharpField(string typeName, string name, string description)
         {
-            Class = cSharpClass;
+            TypeName = typeName;
             Name = name;
             Description = description;
         }

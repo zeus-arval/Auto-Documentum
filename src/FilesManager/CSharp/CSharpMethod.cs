@@ -2,7 +2,7 @@
 
 namespace AD.FilesManager.CSharp
 {
-    public class CSharpMethod : IMethod
+    internal class CSharpMethod : IMethod
     {
         public CSharpMethod() { }
     }

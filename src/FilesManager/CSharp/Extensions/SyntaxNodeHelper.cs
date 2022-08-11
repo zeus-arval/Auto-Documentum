@@ -150,6 +150,7 @@ namespace AD.FilesManager.CSharp.Extensions
 
         internal static CSharpField[] GetCSharpFieldArray(ClassDeclarationSyntax classSyntax)
         {
+            //TODO check if all kind of properties could be used
             var fieldSyntaxis = classSyntax.DescendantNodes().OfType<FieldDeclarationSyntax>().ToList();
 
             if (fieldSyntaxis.Count() == 0)
@@ -196,6 +197,7 @@ namespace AD.FilesManager.CSharp.Extensions
 
         internal static CSharpProperty[] GetCSharpPropertyArray(ClassDeclarationSyntax classSyntax)
         {
+            //TODO check if all kind of properties could be used
             List<PropertyDeclarationSyntax> propertySyntaxis = classSyntax.DescendantNodes().OfType<PropertyDeclarationSyntax>().ToList();
 
             if (propertySyntaxis.Count() == 0)
@@ -229,6 +231,7 @@ namespace AD.FilesManager.CSharp.Extensions
                     continue;
                 }
 
+                //TODO Description of field needs to be taken as well
                 propertyArray[i] = new CSharpProperty(propertyType, propertyName, string.Empty);
             }
 

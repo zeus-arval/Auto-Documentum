@@ -1,6 +1,7 @@
 ﻿using AD.Aids.Factories;
 using AD.FilesManager.Common;
 using AD.FilesManager.CSharp.Extensions;
+using AD.FilesManager.CSharp.FileContentElements;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -58,11 +59,10 @@ namespace AD.FilesManager.CSharp
                 for (int i = 0; i < classSyntaxis.Count; i++)
                 {
                     try
-                    {
-                        CSharpClass cSharpClass = GetCSharpClass(classSyntaxis[i]);
-                        cSharpClasses[i] = cSharpClass;
+                     {
+                        cSharpClasses[i] = GetCSharpClass(classSyntaxis[i]);
 
-                        _logger.LogInformation("Namespace of class {className} is {namespaceName}", cSharpClass.Name, cSharpClass.NamespaceName);
+                        _logger.LogInformation("Namespace of class {className} is {namespaceName}", cSharpClasses[i].Name, cSharpClasses[i].NamespaceName);
                     }
                     catch (Exception ex)
                     {
@@ -91,37 +91,8 @@ namespace AD.FilesManager.CSharp
                 CSharpField[] fields = SyntaxNodeHelper.GetCSharpFieldArray(classSyntax);
                 CSharpProperty[] properties = SyntaxNodeHelper.GetCSharpPropertyArray(classSyntax);
                 CSharpMethod[] methods = SyntaxNodeHelper.GetCSharpMethodArray(classSyntax);
-                Log(fields);
-                Log(properties);
-                Log(methods);
 
                 return new CSharpClass(namespaceName!, string.Empty, className, methods, fields, properties);
-            }
-
-            private void Log(CSharpField[] array)
-            {
-                foreach(var field in array)
-                {
-                    _logger.LogInformation("Field Name: {name} Type: {type}", field.Name, field.TypeName);
-                }
-            }
-            private void Log(CSharpProperty[] array)
-            {
-                foreach (var property in array)
-                {
-                    _logger.LogInformation("Property Name: {name} Type: {type}", property.Name, property.TypeName);
-                }
-            }
-            private void Log(CSharpMethod[] array)
-            {
-                foreach (var method in array)
-                {
-                    _logger.LogInformation("Method Name: {name} Type: {type} Params: ", method.Name, method.ReturnType);
-                    foreach(var param in method.Parameters)
-                    {
-                        _logger.LogInformation("Parameter Name: {name} Type: {type}", param.Name, param.TypeName);
-                    }
-                }
             }
         }
 
@@ -132,7 +103,15 @@ namespace AD.FilesManager.CSharp
         private List<IClass>? _classesList;
         public List<IClass>? ClassesList 
         { 
-            get => _classesList; 
+            get
+            {
+                if (_classesList is null || _classesList.Count == 0)
+                {
+                    FillClasses();
+                }
+
+                return _classesList;
+            }
             private set
             {
                 _classesList = value!;
@@ -150,9 +129,37 @@ namespace AD.FilesManager.CSharp
             _syntaxTreeReader = new CSharpSyntaxTreeReader(mainFactory.CreateLogger<CSharpSyntaxTreeReader>());
         }
 
-        public void FillClasses()
+        private void FillClasses()
         {
             _syntaxTreeReader.ExtractClasses(_syntaxTreeArray, out _classesList); 
+        }
+
+        public void PrintClassListInfo()
+        {
+            foreach (CSharpClass csharpClass in ClassesList!) 
+            {
+                string classPath = csharpClass.NamespaceName + "." + csharpClass.Name;
+                Console.WriteLine($"Class {classPath} has {csharpClass.Methods.Length} methods, {csharpClass.Fields.Length} fields and {csharpClass.Properties.Length} properties");
+                Console.ForegroundColor = ConsoleColor.Green;
+                if (csharpClass.Methods.Count() != 0)
+                {
+                    Console.WriteLine("Methods:");
+                    Array.ForEach(csharpClass.Methods, (method) => Console.WriteLine($"Method {(method as CSharpMethod)!.Name} has {(method as CSharpMethod)!.Parameters.Length} params and its' return type is {(method as CSharpMethod)!.ReturnType}"));
+                }
+                if (csharpClass.Fields.Count() != 0)
+                {
+                    Console.WriteLine("Fields:");
+                    Array.ForEach(csharpClass?.Fields, (field) => Console.WriteLine($"Field {(field as CSharpField)!.Name} is of {(field as CSharpField)!.TypeName} type"));
+                }
+
+                if (csharpClass.Properties.Count() != 0)
+                {
+                    Console.WriteLine("Properties:");
+                    Array.ForEach(csharpClass?.Properties, (property) => Console.WriteLine($"Property {(property as CSharpProperty)!.Name} is of {(property as CSharpProperty)!.TypeName} type"));
+                }
+                Console.WriteLine("\n\n\n");
+                Console.ResetColor();
+            }
         }
     }
 }

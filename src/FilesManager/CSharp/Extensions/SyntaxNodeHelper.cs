@@ -1,6 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using AD.FilesManager.CSharp.FileContentElements;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static AD.FilesManager.CSharp.CSharpFormats;
 
 namespace AD.FilesManager.CSharp.Extensions
 {
@@ -84,7 +86,7 @@ namespace AD.FilesManager.CSharp.Extensions
 
             if (parent is NamespaceDeclarationSyntax namespaceSyntax)
             {
-                parentName = CollectNameFromQualifiedNameSyntax((QualifiedNameSyntax)namespaceSyntax.Name);
+                parentName = CollectNameFromQualifiedNameSyntax(namespaceSyntax.Name as QualifiedNameSyntax);
             }
             else if (parent is ClassDeclarationSyntax parentClassSyntax)
             {
@@ -222,20 +224,11 @@ namespace AD.FilesManager.CSharp.Extensions
                 PropertyDeclarationSyntax? propertyDeclaration = propertySyntaxis[i];
                 string? propertyType = null;
                 string? propertyName = propertyDeclaration.Identifier.Text;
+                var type = propertyDeclaration.Type;
 
-                if (propertyDeclaration.Type is PredefinedTypeSyntax typeSyntax)
-                {
-                    propertyType = typeSyntax.Keyword.Text;
-                }
-                else if (propertyDeclaration.Type is ArrayTypeSyntax arrayTypeSyntax && arrayTypeSyntax.ElementType is PredefinedTypeSyntax predefinedSyntax)
-                {
-                    propertyType = $"{predefinedSyntax.Keyword.Text}[]";
-                }
-                else if (propertyDeclaration.Type is IdentifierNameSyntax identifierNameSyntax)
-                {
-                    propertyType = identifierNameSyntax.Identifier.Text;
-                }
+                propertyType = ReturnTypeName(type);
 
+                //TODO Add recursion for nullable and other types
                 if (propertyType is null || propertyName is null)
                 {
                     continue;
@@ -246,6 +239,45 @@ namespace AD.FilesManager.CSharp.Extensions
             }
 
             return propertyArray;
+        }
+
+        private static string ReturnTypeName(TypeSyntax type)
+        {
+            if (type is null)
+            {
+                return string.Empty;
+            }
+
+            if (type is NullableTypeSyntax nullableType)
+            {
+                return string.Format(NULLABLE_OPERATOR, ReturnTypeName(nullableType.ElementType));
+            }
+            else if (type is ArrayTypeSyntax arrayType)
+            {
+                return string.Format(ARRAY_OPERATOR, ReturnTypeName(arrayType.ElementType));
+            }
+            else if (type is PredefinedTypeSyntax predefinedType)
+            {
+                return predefinedType.Keyword.Text;
+            }
+            else if (type is IdentifierNameSyntax identifierName)
+            {
+                return identifierName.Identifier.Text;
+            }
+            else if (type is GenericNameSyntax genericName)
+            {
+                string name = genericName.Identifier.Text;
+                List<string> argumentNameList = new List<string>();
+
+                foreach (var argument in genericName.TypeArgumentList.Arguments)
+                {
+                    argumentNameList.Add(ReturnTypeName(argument));
+                }
+
+                return string.Format(GENERIC_OPERATOR, name, String.Join(',', argumentNameList));
+            }
+
+            return string.Empty;
         }
 
         internal static CSharpMethod[] GetCSharpMethodArray(ClassDeclarationSyntax classSyntax)

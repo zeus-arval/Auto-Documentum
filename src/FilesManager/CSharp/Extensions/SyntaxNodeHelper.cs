@@ -78,15 +78,23 @@ namespace AD.FilesManager.CSharp.Extensions
         internal static SyntaxNode? FillParentName(SyntaxNode? syntaxNode, out string? parentName)
         {
             var parent = syntaxNode?.Parent;
+            parentName = string.Empty;
+
             if (parent is null || parent is CompilationUnitSyntax)
             {
-                parentName = string.Empty;
                 return null;
             }
 
             if (parent is NamespaceDeclarationSyntax namespaceSyntax)
             {
-                parentName = CollectNameFromQualifiedNameSyntax(namespaceSyntax.Name as QualifiedNameSyntax);
+                if (namespaceSyntax.Name is IdentifierNameSyntax identifierName)
+                {
+                    parentName = identifierName.Identifier.Text;
+                }
+                else if (namespaceSyntax.Name is QualifiedNameSyntax qualifiedName)
+                {
+                    parentName = CollectNameFromQualifiedNameSyntax(qualifiedName);
+                }
             }
             else if (parent is ClassDeclarationSyntax parentClassSyntax)
             {

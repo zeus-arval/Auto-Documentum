@@ -1,6 +1,6 @@
 ﻿using AD.FilesManager.Common;
 
-namespace AD.FilesManager.CSharp
+namespace AD.FilesManager.CSharp.FileContentElements
 {
     internal sealed class CSharpClass : IClass
     {

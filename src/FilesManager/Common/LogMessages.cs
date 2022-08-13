@@ -20,6 +20,6 @@
         public const string FILE_DOESNOT_CONTAIN_ANY_NAMESPACE = "{filePath} doesn't contain any namespace.";
         public const string FILE_DOESNOT_CONTAIN_ANY_CLASS = "{filePath} doesn't contain any class";
 
-#region
+#endregion
     }
 }

@@ -43,7 +43,7 @@ namespace AD.FilesManager.CSharp
 
                 if (containsNamespaces == false)
                 {
-                    _logger.LogWarning(SYNTAX_TREE_DOESNOT_CONTAIN_ANY_NAMESPACE, syntaxTree.FilePath);
+                    _logger.LogWarning(FILE_DOESNOT_CONTAIN_ANY_NAMESPACE, syntaxTree.FilePath);
                     return Array.Empty<CSharpClass>();
                 }
 

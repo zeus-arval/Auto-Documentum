@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
+using static AD.FilesManager.Common.LogMessages;
 
 namespace AD.FilesManager.CSharp
 {
@@ -42,7 +43,7 @@ namespace AD.FilesManager.CSharp
 
                 if (containsNamespaces == false)
                 {
-                    _logger.LogWarning("SyntaxTree {FilePath} doesn't contain any namespace.", syntaxTree.FilePath);
+                    _logger.LogWarning(SYNTAX_TREE_DOESNOT_CONTAIN_ANY_NAMESPACE, syntaxTree.FilePath);
                     return Array.Empty<CSharpClass>();
                 }
 
@@ -51,7 +52,7 @@ namespace AD.FilesManager.CSharp
 
                 if (containsClasses == false)
                 {
-                    _logger.LogWarning("{filePath} doesn't contain any class", syntaxTree.FilePath);
+                    _logger.LogWarning(FILE_DOESNOT_CONTAIN_ANY_CLASS, syntaxTree.FilePath);
 
                     return Array.Empty<CSharpClass>();
                 }
@@ -59,14 +60,12 @@ namespace AD.FilesManager.CSharp
                 for (int i = 0; i < classSyntaxis.Count; i++)
                 {
                     try
-                     {
+                    {
                         cSharpClasses[i] = GetCSharpClass(classSyntaxis[i]);
-
-                        _logger.LogInformation("Namespace of class {className} is {namespaceName}", cSharpClasses[i].Name, cSharpClasses[i].NamespaceName);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError("Error occured. ", ex.Message);
+                        _logger.LogError(GENERIC_ERROR_OCCURED, ex.Message);
                         throw;
                     }
                 }
@@ -79,13 +78,13 @@ namespace AD.FilesManager.CSharp
                 var succeeded = SyntaxNodeHelper.TryGetFullClassPath(classSyntax, out string? namespaceName);
                 if (succeeded == false)
                 {
-                    throw new Exception("Couldn't get namespace");
+                    throw new Exception(CANNOT_GET_NAMESPACE_NAME);
                 }
 
                 succeeded = SyntaxNodeHelper.TryGetClassName(classSyntax, out string className);
                 if (succeeded == false)
                 {
-                    throw new Exception("Couldn't get class name");
+                    throw new Exception(CANNOT_GET_CLASS_NAME);
                 }
 
                 CSharpField[] fields = SyntaxNodeHelper.GetCSharpFieldArray(classSyntax);
@@ -141,21 +140,21 @@ namespace AD.FilesManager.CSharp
                 string classPath = csharpClass.NamespaceName + "." + csharpClass.Name;
                 Console.WriteLine($"Class {classPath} has {csharpClass.Methods.Length} methods, {csharpClass.Fields.Length} fields and {csharpClass.Properties.Length} properties");
                 Console.ForegroundColor = ConsoleColor.Green;
-                if (csharpClass.Methods.Count() != 0)
+                if (csharpClass?.Methods.Count() != 0)
                 {
                     Console.WriteLine("Methods:");
-                    Array.ForEach(csharpClass.Methods, (method) => Console.WriteLine($"Method {(method as CSharpMethod)!.Name} has {(method as CSharpMethod)!.Parameters.Length} params and its' return type is {(method as CSharpMethod)!.ReturnType}"));
+                    Array.ForEach(csharpClass!.Methods, (method) => Console.WriteLine($"Method {(method as CSharpMethod)!.Name} has {(method as CSharpMethod)!.Parameters.Length} params and its' return type is {(method as CSharpMethod)!.ReturnType}"));
                 }
-                if (csharpClass.Fields.Count() != 0)
+                if (csharpClass?.Fields.Count() != 0)
                 {
                     Console.WriteLine("Fields:");
-                    Array.ForEach(csharpClass?.Fields, (field) => Console.WriteLine($"Field {(field as CSharpField)!.Name} is of {(field as CSharpField)!.TypeName} type"));
+                    Array.ForEach(csharpClass!.Fields, (field) => Console.WriteLine($"Field {(field as CSharpField)!.Name} is of {(field as CSharpField)!.TypeName} type"));
                 }
 
-                if (csharpClass.Properties.Count() != 0)
+                if (csharpClass?.Properties.Count() != 0)
                 {
                     Console.WriteLine("Properties:");
-                    Array.ForEach(csharpClass?.Properties, (property) => Console.WriteLine($"Property {(property as CSharpProperty)!.Name} is of {(property as CSharpProperty)!.TypeName} type"));
+                    Array.ForEach(csharpClass!.Properties, (property) => Console.WriteLine($"Property {(property as CSharpProperty)!.Name} is of {(property as CSharpProperty)!.TypeName} type"));
                 }
                 Console.WriteLine("\n\n\n");
                 Console.ResetColor();

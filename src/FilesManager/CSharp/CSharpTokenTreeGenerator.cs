@@ -39,7 +39,7 @@ namespace AD.FilesManager.CSharp
 
             if (fileContentArray.Length == 0)
             {
-                return new CSharpTokenTree[1]{ (new CSharpTokenTree(ErrorMessages.FILE_CONTENT_ARRAY_LENGTH_IS_ZERO, null)) };
+                return new CSharpTokenTree[1]{ (new CSharpTokenTree(LogMessages.FILE_CONTENT_ARRAY_LENGTH_IS_ZERO, null)) };
             }
 
             CSharpTokenTree[] cSharpSyntaxTreeArray = new CSharpTokenTree[fileContentArray.Length];

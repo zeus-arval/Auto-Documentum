@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using static AD.FilesManager.Common.LogMessages;
 
 namespace AD.FilesManager.Common
 {
@@ -19,7 +20,7 @@ namespace AD.FilesManager.Common
         {
             if (Directory.Exists(directoryPath) == false)
             {
-                _logger.LogWarning($"Directory [{directoryPath}] doesn't exist");
+                _logger.LogWarning(DIRECTORY_DOESNOT_EXIST, directoryPath);
                 return Array.Empty<string>();
             }
 
@@ -27,11 +28,6 @@ namespace AD.FilesManager.Common
 
             var files = Directory.GetFiles(directoryPath, fileFormatPattern, SearchOption.AllDirectories);
             filePathsList.AddRange(files);
-
-            foreach (var fileName in filePathsList)
-            {
-                _logger.LogInformation($"File = {fileName}");
-            }
 
             return filePathsList;
         }

@@ -10,7 +10,7 @@ using static AD.FilesManager.Common.LogMessages;
 
 namespace AD.FilesManager.CSharp
 {
-    public sealed class CSharpTokenTreeCollector : ITokenTreeCollector
+    public sealed class CSharpDiagramElementsBuilder : IDiagramElementsBuilder
     {
         private class CSharpSyntaxTreeReader
         {
@@ -30,6 +30,7 @@ namespace AD.FilesManager.CSharp
                     if (tokenTree.ErrorMessage != string.Empty)
                     {
                         _logger.LogError(tokenTree.ErrorMessage);
+
                         continue;
                     }
 
@@ -95,7 +96,7 @@ namespace AD.FilesManager.CSharp
             }
         }
 
-        private ILogger<CSharpTokenTreeCollector> _logger;
+        private ILogger<CSharpDiagramElementsBuilder> _logger;
         private readonly IEnumerable<CSharpTokenTree> _syntaxTreeArray;
         private readonly CSharpTokenTreeGenerator _generator;
         private readonly CSharpSyntaxTreeReader _syntaxTreeReader;
@@ -119,9 +120,9 @@ namespace AD.FilesManager.CSharp
 
         public string DirectoryPath { get; private set; }
 
-        public CSharpTokenTreeCollector(MainFactory mainFactory, string directoryPath)
+        public CSharpDiagramElementsBuilder(MainFactory mainFactory, string directoryPath)
         {
-            _logger = mainFactory.CreateLogger<CSharpTokenTreeCollector>();
+            _logger = mainFactory.CreateLogger<CSharpDiagramElementsBuilder>();
             DirectoryPath = directoryPath;
             _generator = new CSharpTokenTreeGenerator();
             _syntaxTreeArray = _generator.CreateSyntaxTreeArray(DirectoryPath);

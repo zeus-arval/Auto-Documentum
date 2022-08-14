@@ -2,7 +2,7 @@
 
 namespace AD.FilesManager.Common
 {
-    public interface ITokenTreeCollector
+    public interface IDiagramElementsBuilder
     {
         List<IClass>? ClassesList { get; }
     }

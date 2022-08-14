@@ -11,11 +11,13 @@
   <ItemGroup>
     <None Remove="TestCases\TestEmptyFile.txt" />
     <None Remove="TestCases\TestFile.txt" />
+    <None Remove="TestCases\TestFileWithClasses.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Include="TestCases\TestEmptyFile.txt" />
     <Compile Include="TestCases\TestFile.txt" />
+    <Compile Include="TestCases\TestFileWithClasses.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Factories\Factories.csproj" />
+    <ProjectReference Include="..\Factories\Aids.csproj" />
     <ProjectReference Include="..\FilesManager\FilesManager.csproj" />
   </ItemGroup>
 

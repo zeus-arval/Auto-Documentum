@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace AD.FilesManager
+namespace AD.FilesManager.Common
 {
     public class FileReader
     {
         public class EmptyFileException : Exception
         {
-            public EmptyFileException(in string fileName) : base(String.Format("File {0} is empty", fileName)) { }
+            public EmptyFileException(in string fileName) : base(string.Format(LogMessages.EMPTY_FILE_EXCEPTION, fileName)) { }
         }
 
         private readonly ILogger<FileReader> _logger;
@@ -16,49 +16,50 @@ namespace AD.FilesManager
             _logger = logger;
         }
 
-        public void ReadFile(in string filePath)
+        public FileContext ReadFile(in string filePath)
         {
             try
             {
-                ReadFileImpl(filePath);
+                return ReadFileImpl(filePath);
             }
-            catch(EmptyFileException ex)
+            catch (EmptyFileException ex)
             {
                 _logger.LogError(ex.Message);
-                return;
+                return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
-            catch (FileNotFoundException ex) 
+            catch (FileNotFoundException ex)
             {
-                _logger.LogError("Wrong file path [{filePath}]. ", ex.Message);
-                return;
+                _logger.LogError(LogMessages.WRONG_FILE_PATH_EXCEPTION, ex.Message);
+                return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Couldn't read a file. ", ex.Message);
-                return;
+                _logger.LogError(LogMessages.FAILED_TO_READ_FILE, filePath, ex.Message);
+                return new FileContext(string.Empty, ex.Message, filePath, -1);
             }
         }
 
-        protected virtual void ReadFileImpl(in string filePath)
+        protected virtual FileContext ReadFileImpl(in string filePath)
         {
             string fileContent = string.Empty;
 
             using (StreamReader reader = new(filePath))
             {
-
                 string? fileLine = null;
                 int linesCount = 0;
 
                 while ((fileLine = reader.ReadLine()) != null)
                 {
-                    if (fileLine.Trim() == String.Empty)
+                    if (fileLine.Trim() == string.Empty)
                     {
                         continue;
                     }
 
                     if (fileLine.IsNormalized())
                     {
-                        Validate(fileLine, ref linesCount);
+                        Validate(ref fileLine);
+                        fileContent += fileLine;
+                        linesCount++;
                     }
                 }
 
@@ -66,27 +67,18 @@ namespace AD.FilesManager
                 {
                     throw new EmptyFileException(filePath);
                 }
+
+                return new FileContext(fileContent, string.Empty, filePath, -1);
             };
         }
 
-        private void Validate(string fileLine, ref int linesCount)
+        protected virtual void Validate(ref string stringLine) 
         {
-            FileLineEventArgs args = new FileLineEventArgs(fileLine);
-            OnFileLineSent(args);
-            linesCount++;
-        }
-
-        private void OnFileLineSent(FileLineEventArgs e)
-        {
-            EventHandler<FileLineEventArgs>? handler = FileLineSent ?? null; 
-
-            if (handler != null)
+            if (stringLine.Contains("//"))
             {
-                handler!(this, e);
+                stringLine += "\n";
             }
         }
-
-        public event EventHandler<FileLineEventArgs>? FileLineSent;
     }
 
     public class FileLineEventArgs : EventArgs

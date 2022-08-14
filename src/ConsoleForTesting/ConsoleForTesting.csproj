@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Factories\Factories.csproj" />
+    <ProjectReference Include="..\Factories\Aids.csproj" />
     <ProjectReference Include="..\FilesManager\FilesManager.csproj" />
   </ItemGroup>
 

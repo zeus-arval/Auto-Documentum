@@ -1,5 +1,5 @@
-﻿using AD.Factories;
-using AD.FilesManager;
+﻿using AD.Aids.Factories;
+using AD.FilesManager.Common;
 using Microsoft.Extensions.Logging;
 using Tests.TestHelper;
 
@@ -12,30 +12,30 @@ namespace Tests.FilesManager
         {
             public FileReaderMock(ILogger<FileReaderMock> logger) : base(logger) { }
 
-            public void ReadFileForTest(in string filePath)
+            public string ReadFileForTest(in string filePath)
             {
-                ReadFileImpl(filePath);
+                return ReadFileImpl(filePath).FileContent;
+            }
+            protected override void Validate(ref string fileLine)
+            {
+                fileLine = fileLine.Trim();
             }
         }
 
         #region Content of TestFile
-        private List<string> fileLinesList = new List<string>
-        {
-"namespace Tests.TestCases",
-"{",
-    "public class TestFile",
-    "{",
-        "private int _testFieldInt;",
-        "public TestFile()",
-        "{",
-            "_testFieldInt = 1;",
-        "}",
-    "}",
-"}",
-        };
+        private const string EXPECTED_FILE_CONTENT = "namespace Tests.TestCases"+
+"{"+
+    "public class TestFile"+
+    "{"+
+        "private int _testFieldInt;"+
+        "public TestFile()"+
+        "{"+
+            "_testFieldInt = 1;"+
+        "}"+
+    "}"+
+"}";
         #endregion
 
-        private Queue<string>? fileLineQueue;
         private FileReaderMock _fileReader;
         private string TEST_DIRECTORY_PATH = AppDomain.CurrentDomain.BaseDirectory.GetDirectoryParentPath( 3).GoToChildsDirectory("TestCases") ;
 
@@ -44,22 +44,6 @@ namespace Tests.FilesManager
         {
             MainFactory factory = new();
             _fileReader = new FileReaderMock(factory.CreateStubLogger<FileReaderMock>());
-            _fileReader.FileLineSent += CompareCodeLines;
-        }
-
-        private void CompareCodeLines(object? sender, FileLineEventArgs e)
-        {
-            fileLineQueue!.TryDequeue(out var fileLine);
-            fileLine ??= string.Empty;
-            Assert.That(fileLine, Is.EqualTo(e.FileLine.Trim()));
-        }
-
-        private IEnumerable<string> ReturnTestFileLines()
-        {
-            foreach (string line in fileLinesList)
-            {
-                yield return line;
-            }
         }
 
         [TestCase(@"WrongFile.txt", typeof(FileNotFoundException), TestName = "Wrong File Reading")]
@@ -70,8 +54,8 @@ namespace Tests.FilesManager
             string fullPath = TEST_DIRECTORY_PATH.GoToChildsDirectory(filePath);
             if (exceptionType is null)
             {
-                fileLineQueue = new(ReturnTestFileLines());
-                _fileReader.ReadFileForTest(fullPath);
+                string actualFileContent = _fileReader.ReadFileForTest(fullPath);
+                Assert.That(actualFileContent, Is.EqualTo(EXPECTED_FILE_CONTENT));
             }
             else
             {

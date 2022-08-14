@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleForTesting", "Consol
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilesManager", "FilesManager\FilesManager.csproj", "{11ACCF10-5C71-4E94-BAD2-C24D1E0028C8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Factories", "Factories\Factories.csproj", "{F3954821-404E-4F74-8F25-D302807433C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aids", "Factories\Aids.csproj", "{F3954821-404E-4F74-8F25-D302807433C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{3AB90175-C146-40FD-A6CD-B82BA7C00B95}"
 EndProject

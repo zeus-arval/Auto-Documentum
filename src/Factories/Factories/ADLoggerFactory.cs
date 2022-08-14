@@ -1,7 +1,7 @@
-﻿using AD.Factories.Common;
+﻿using AD.Aids.Common;
 using Microsoft.Extensions.Logging;
 
-namespace AD.Factories
+namespace AD.Aids.Factories
 {
     public class ADLoggerFactory : IFactory<ILogger>
     {
@@ -21,7 +21,7 @@ namespace AD.Factories
             {
                 config.AddConsole();
                 config.SetMinimumLevel(LogLevel.Debug);
-                
+
 
             }).CreateLogger<T>();
         }

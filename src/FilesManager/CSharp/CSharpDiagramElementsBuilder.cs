@@ -10,6 +10,9 @@ using static AD.FilesManager.Common.LogMessages;
 
 namespace AD.FilesManager.CSharp
 {
+    /// <summary>
+    /// Class which gets syntax trees and returns Diagram C# elements list
+    /// </summary>
     public sealed class CSharpDiagramElementsBuilder : IDiagramElementsBuilder
     {
         private class CSharpSyntaxTreeReader
@@ -21,6 +24,11 @@ namespace AD.FilesManager.CSharp
                 _logger = logger;
             }
 
+            /// <summary>
+            /// Extracts <paramref name="tokenTreeArray"/> to <paramref name="cSharpClasses"/>
+            /// </summary>
+            /// <param name="tokenTreeArray">An array of CSharpTokenTrees (AST objects)</param>
+            /// <param name="cSharpClasses">A list of CSharpClass</param>
             public void ExtractClasses(IEnumerable<CSharpTokenTree> tokenTreeArray, out List<IClass> cSharpClasses)
             {
                 cSharpClasses = new List<IClass>();
@@ -40,7 +48,7 @@ namespace AD.FilesManager.CSharp
 
             private CSharpClass[] ExtractClassesImpl(in SyntaxTree syntaxTree)
             {
-                var containsNamespaces = SyntaxNodeHelper.TryGetNameSpaceSyntaxis(syntaxTree, out List<NamespaceDeclarationSyntax> namespaceSyntaxis);
+                var containsNamespaces = SyntaxNodeHelper.TryGetNamespaceSyntaxis(syntaxTree, out List<NamespaceDeclarationSyntax> namespaceSyntaxis);
 
                 if (containsNamespaces == false)
                 {
@@ -74,6 +82,11 @@ namespace AD.FilesManager.CSharp
                 return cSharpClasses;
             }
 
+            /// <summary>
+            /// Returns CSharpClass from <paramref name="classSyntax"/>
+            /// </summary>
+            /// <param name="classSyntax"></param>
+            /// <exception cref="Exception">If class doesn't contain namespace or class name couldn't be extracted, exception is thrown</exception>
             private CSharpClass GetCSharpClass(in ClassDeclarationSyntax classSyntax)
             {
                 var succeeded = SyntaxNodeHelper.TryGetFullClassPath(classSyntax, out string? namespaceName);
@@ -101,6 +114,7 @@ namespace AD.FilesManager.CSharp
         private readonly CSharpTokenTreeGenerator _generator;
         private readonly CSharpSyntaxTreeReader _syntaxTreeReader;
         private List<IClass>? _classesList;
+
         public List<IClass>? ClassesList 
         { 
             get
@@ -129,11 +143,18 @@ namespace AD.FilesManager.CSharp
             _syntaxTreeReader = new CSharpSyntaxTreeReader(mainFactory.CreateLogger<CSharpSyntaxTreeReader>());
         }
 
+        /// <summary>
+        /// Calls <see cref="CSharpSyntaxTreeReader.ExtractClasses(IEnumerable{CSharpTokenTree}, out List{IClass})"/>
+        /// </summary>
         private void FillClasses()
         {
             _syntaxTreeReader.ExtractClasses(_syntaxTreeArray, out _classesList); 
         }
 
+        /// <summary>
+        /// Just a method for tests
+        /// </summary>
+        [Obsolete("This method is used just for a module demontration")]
         public void PrintClassListInfo()
         {
             foreach (CSharpClass csharpClass in ClassesList!) 

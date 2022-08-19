@@ -9,7 +9,7 @@ namespace ConsoleForTesting
         {
             string filePath = @"C:\Users\a.valdna\source\repos\TestClassReading\Test";
             MainFactory factory = new MainFactory();
-            CSharpDiagramElementsBuilder collector = new CSharpDiagramElementsBuilder(factory, filePath);
+            CSharpDiagramElementsBuilder collector = new CSharpDiagramElementsBuilder(factory);
             collector.PrintClassListInfo();
         }
     }

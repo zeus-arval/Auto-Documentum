@@ -41,5 +41,23 @@ namespace NamespaceA
 		public string FullAddress { get; private set; }
 		public List<Person?>? Persons { get; private set; }
 
+
+		public House(string fullAddress)
+		{
+			FullAddress = fullAdress;
+		}
+
+		public bool TryAddPerson(NamespaceB.Person person)
+		{
+			if (Persons is null)
+			{
+				Persons = new List<NamespaceB.Person>();
+			}
+			
+			int count = Persons.Count();
+			Persons.Add(person);
+
+			return Persons.Count() > count;
+		}
 	}
 }

@@ -13,7 +13,7 @@ namespace AD.FilesManager.CSharp
     /// <summary>
     /// Class which gets syntax trees and returns Diagram C# elements list
     /// </summary>
-    public sealed class CSharpDiagramElementsBuilder : IDiagramElementsBuilder
+    public class CSharpDiagramElementsBuilder : IDiagramElementsBuilder
     {
         private class CSharpSyntaxTreeReader
         {
@@ -109,11 +109,14 @@ namespace AD.FilesManager.CSharp
             }
         }
 
-        private ILogger<CSharpDiagramElementsBuilder> _logger;
-        private readonly IEnumerable<CSharpTokenTree> _syntaxTreeArray;
-        private readonly CSharpTokenTreeGenerator _generator;
+        protected readonly CSharpTokenTreeGenerator generator;
+        private protected IEnumerable<CSharpTokenTree> _syntaxTreeArray;
+
         private readonly CSharpSyntaxTreeReader _syntaxTreeReader;
+
+        private ILogger<CSharpDiagramElementsBuilder> _logger;
         private List<IClass>? _classesList;
+
 
         public List<IClass>? ClassesList 
         { 
@@ -134,13 +137,18 @@ namespace AD.FilesManager.CSharp
 
         public string DirectoryPath { get; private set; }
 
-        public CSharpDiagramElementsBuilder(MainFactory mainFactory, string directoryPath)
+        public CSharpDiagramElementsBuilder(MainFactory mainFactory)
         {
             _logger = mainFactory.CreateLogger<CSharpDiagramElementsBuilder>();
-            DirectoryPath = directoryPath;
-            _generator = new CSharpTokenTreeGenerator();
-            _syntaxTreeArray = _generator.CreateSyntaxTreeArray(DirectoryPath);
+            generator = new CSharpTokenTreeGenerator();
             _syntaxTreeReader = new CSharpSyntaxTreeReader(mainFactory.CreateLogger<CSharpSyntaxTreeReader>());
+        }
+
+        public void CreateSyntaxTreeArray(in string directoryPath)
+        {
+            DirectoryPath = directoryPath;
+
+            _syntaxTreeArray = generator.CreateSyntaxTreeArray(DirectoryPath);
         }
 
         /// <summary>
@@ -148,7 +156,10 @@ namespace AD.FilesManager.CSharp
         /// </summary>
         private void FillClasses()
         {
-            _syntaxTreeReader.ExtractClasses(_syntaxTreeArray, out _classesList); 
+            if (_syntaxTreeArray is not null && _syntaxTreeArray.Count() > 0)
+            {
+                _syntaxTreeReader.ExtractClasses(_syntaxTreeArray, out _classesList); 
+            }
         }
 
         /// <summary>

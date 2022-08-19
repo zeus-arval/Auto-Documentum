@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AD.FilesManager.CSharp;
+using Microsoft.Extensions.Logging;
 using static AD.FilesManager.Common.LogMessages;
 
 namespace AD.FilesManager.Common
@@ -6,6 +7,8 @@ namespace AD.FilesManager.Common
     public class FilesController
     {
         private readonly ILogger _logger;
+
+        public string FileFormatPattern = CSharpFormats.CSHARP_FILE_FORMAT;
         public FilesController(ILogger<FilesController> logger)
         {
             _logger = logger;
@@ -16,7 +19,7 @@ namespace AD.FilesManager.Common
         /// </summary>
         /// <param name="fileFormatPattern">Format of files, which are being searched</param>
         /// <returns></returns>
-        public IEnumerable<string> ReturnFilePathArray(in string directoryPath, in string fileFormatPattern)
+        public IEnumerable<string> ReturnFilePathArray(in string directoryPath)
         {
             if (Directory.Exists(directoryPath) == false)
             {
@@ -26,7 +29,7 @@ namespace AD.FilesManager.Common
 
             List<string> filePathsList = new List<string>();
 
-            var files = Directory.GetFiles(directoryPath, fileFormatPattern, SearchOption.AllDirectories);
+            var files = Directory.GetFiles(directoryPath, FileFormatPattern, SearchOption.AllDirectories);
             filePathsList.AddRange(files);
 
             return filePathsList;

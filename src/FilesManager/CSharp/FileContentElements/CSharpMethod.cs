@@ -2,7 +2,7 @@
 
 namespace AD.FilesManager.CSharp.FileContentElements
 {
-    internal class CSharpMethod : IMethod
+    public class CSharpMethod : IMethod
     {
         public CSharpParameter[] Parameters { get; init; }
         public string Name { get; init; }

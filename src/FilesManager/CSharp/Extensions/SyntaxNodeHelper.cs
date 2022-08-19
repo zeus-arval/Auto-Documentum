@@ -12,7 +12,7 @@ namespace AD.FilesManager.CSharp.Extensions
         /// Tries to get parent of <paramref name="syntaxNode"/> and to put it to <paramref name="result"/>
         /// </summary>
         /// <typeparam name="T">Every <see cref="SyntaxNode"/></typeparam>
-        /// <returns>True, if parent was found and put to <paramref name="result"/>, else false</returns>
+        /// <returns>True, if parent was found and was put to <paramref name="result"/></returns>
         internal static bool TryGetParentSyntax<T>(SyntaxNode? syntaxNode, out T? result)
         where T : SyntaxNode
         {

@@ -20,7 +20,7 @@ namespace AD.FilesManager.CSharp
 
         private readonly ILogger _logger;
         private readonly FileReader _filesReader;
-        private readonly FilesController _filesController;
+        public readonly FilesController filesController;
 
         public CSharpTokenTreeGenerator()
         {
@@ -28,7 +28,7 @@ namespace AD.FilesManager.CSharp
 
             _logger = factory.CreateLogger<CSharpTokenTreeGenerator>();
             _filesReader = new FileReader(factory.CreateLogger<FileReader>());
-            _filesController = new FilesController(factory.CreateLogger<FilesController>());
+            filesController = new FilesController(factory.CreateLogger<FilesController>());
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace AD.FilesManager.CSharp
         /// <param name="directoryPath"></param>
         private CSharpFile[] GetFileContentArray(in string directoryPath)
         {
-            IEnumerable<string> filePaths = _filesController.ReturnFilePathArray(directoryPath, CSharpFormats.CSharpFileFormat);
+            IEnumerable<string> filePaths = filesController.ReturnFilePathArray(directoryPath);
             List<CSharpFile> fileContentList = new List<CSharpFile>();
 
             foreach (string path in filePaths)

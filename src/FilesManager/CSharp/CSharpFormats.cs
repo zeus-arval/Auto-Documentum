@@ -9,6 +9,6 @@
         internal const string GENERIC_OPERATOR = "{0}<{1}>";
         internal const string ARRAY_OPERATOR = "{0}[]";
 
-        internal const string CSharpFileFormat = "*.cs";
+        internal const string CSHARP_FILE_FORMAT = "*.cs";
     }
 }

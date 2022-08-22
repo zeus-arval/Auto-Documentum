@@ -110,7 +110,7 @@ namespace AD.FilesManager.CSharp
         }
 
         protected readonly CSharpTokenTreeGenerator generator;
-        private protected IEnumerable<CSharpTokenTree> _syntaxTreeArray;
+        private protected IEnumerable<CSharpTokenTree>? _syntaxTreeArray;
 
         private readonly CSharpSyntaxTreeReader _syntaxTreeReader;
 
@@ -142,6 +142,7 @@ namespace AD.FilesManager.CSharp
             _logger = mainFactory.CreateLogger<CSharpDiagramElementsBuilder>();
             generator = new CSharpTokenTreeGenerator();
             _syntaxTreeReader = new CSharpSyntaxTreeReader(mainFactory.CreateLogger<CSharpSyntaxTreeReader>());
+            DirectoryPath = string.Empty;
         }
 
         public void CreateSyntaxTreeArray(in string directoryPath)

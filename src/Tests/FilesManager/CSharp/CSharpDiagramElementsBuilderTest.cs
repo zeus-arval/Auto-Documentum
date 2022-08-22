@@ -42,23 +42,6 @@ namespace Tests.FilesManager.CSharp
             CheckClasses(classes, expectedClasses);
         }
 
-        private void CheckClasses(List<IClass> classes, List<CSharpClass> expectedClasses)
-        {
-            for (int classNum = 0; classNum < classes.Count; classNum++)
-            {
-                var actualClass = classes[classNum] as CSharpClass;
-                var expectedClass = expectedClasses[classNum];
-
-                Assert.AreEqual(actualClass.Name, expectedClass.Name);
-                Assert.AreEqual(actualClass.Description, expectedClass.Description);
-                Assert.AreEqual(actualClass.NamespaceName, expectedClass.NamespaceName);
-
-                CheckMethods(actualClass, expectedClass);
-                CheckFields(actualClass, expectedClass);
-                CheckProperties(actualClass, expectedClass);
-            }
-        }
-
         private List<CSharpClass> InitializeExpectedClasses() 
         {
             var personMethods = new CSharpMethod[]
@@ -107,6 +90,23 @@ namespace Tests.FilesManager.CSharp
                 new CSharpClass("NamespaceA.NamespaceB", string.Empty, "Person", personMethods, personFields, personProperties),
                 new CSharpClass("NamespaceA", string.Empty, "House", houseMethods, houseFields, houseProperties),
             };
+        }
+
+        private void CheckClasses(List<IClass> classes, List<CSharpClass> expectedClasses)
+        {
+            for (int classNum = 0; classNum < classes.Count; classNum++)
+            {
+                var actualClass = classes[classNum] as CSharpClass;
+                var expectedClass = expectedClasses[classNum];
+
+                Assert.AreEqual(actualClass.Name, expectedClass.Name);
+                Assert.AreEqual(actualClass.Description, expectedClass.Description);
+                Assert.AreEqual(actualClass.NamespaceName, expectedClass.NamespaceName);
+
+                CheckMethods(actualClass, expectedClass);
+                CheckFields(actualClass, expectedClass);
+                CheckProperties(actualClass, expectedClass);
+            }
         }
 
         private void CheckProperties(CSharpClass actualClass, CSharpClass expectedClass)

@@ -2,7 +2,7 @@
 
 namespace AD.FilesManager.CSharp.FileContentElements
 {
-    internal sealed class CSharpClass : IClass
+    public sealed class CSharpClass : IClass
     {
         public string NamespaceName { get; init; }
         public string Description { get; init; }

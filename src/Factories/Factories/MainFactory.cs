@@ -6,9 +6,9 @@ namespace AD.Aids.Factories
     {
         private readonly ADLoggerFactory _loggerFactory;
 
-        public MainFactory()
+        public MainFactory(bool forTesting = false)
         {
-            _loggerFactory = new ADLoggerFactory();
+            _loggerFactory = new ADLoggerFactory(forTesting);
         }
 
         public ILogger<T> CreateLogger<T>()

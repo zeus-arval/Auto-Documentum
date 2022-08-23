@@ -18,11 +18,9 @@ namespace AD.FilesManager.CSharp
             }
         }
 
-        private const string CSharpFileFormat = "*.cs";
-
         private readonly ILogger _logger;
         private readonly FileReader _filesReader;
-        private readonly FilesController _filesController;
+        public readonly FilesController filesController;
 
         public CSharpTokenTreeGenerator()
         {
@@ -30,16 +28,20 @@ namespace AD.FilesManager.CSharp
 
             _logger = factory.CreateLogger<CSharpTokenTreeGenerator>();
             _filesReader = new FileReader(factory.CreateLogger<FileReader>());
-            _filesController = new FilesController(factory.CreateLogger<FilesController>());
+            filesController = new FilesController(factory.CreateLogger<FilesController>());
         }
 
+        /// <summary>
+        /// Converts array of file contents to CSharpTokenTree list
+        /// </summary>
+        /// <param name="directoryPath"></param>
         public IEnumerable<CSharpTokenTree> CreateSyntaxTreeArray(string directoryPath)
         {
             CSharpFile[] fileContentArray = GetFileContentArray(directoryPath);
 
             if (fileContentArray.Length == 0)
             {
-                return new CSharpTokenTree[1]{ (new CSharpTokenTree(LogMessages.FILE_CONTENT_ARRAY_LENGTH_IS_ZERO, null)) };
+                return new CSharpTokenTree[1]{ (new CSharpTokenTree(string.Format(LogMessages.FILE_CONTENT_ARRAY_LENGTH_IS_ZERO, directoryPath), null)) };
             }
 
             CSharpTokenTree[] cSharpSyntaxTreeArray = new CSharpTokenTree[fileContentArray.Length];
@@ -52,10 +54,13 @@ namespace AD.FilesManager.CSharp
             return cSharpSyntaxTreeArray;
         }
 
-
+        /// <summary>
+        /// Gets array of file contents from <paramref name="directoryPath"/> and subdirectories
+        /// </summary>
+        /// <param name="directoryPath"></param>
         private CSharpFile[] GetFileContentArray(in string directoryPath)
         {
-            IEnumerable<string> filePaths = _filesController.ReturnFilePathArray(directoryPath, CSharpFileFormat);
+            IEnumerable<string> filePaths = filesController.ReturnFilePathArray(directoryPath);
             List<CSharpFile> fileContentList = new List<CSharpFile>();
 
             foreach (string path in filePaths)

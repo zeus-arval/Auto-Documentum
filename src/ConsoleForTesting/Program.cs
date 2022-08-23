@@ -9,8 +9,8 @@ namespace ConsoleForTesting
         {
             string filePath = @"C:\Users\a.valdna\source\repos\TestClassReading\Test";
             MainFactory factory = new MainFactory();
-            CSharpTokenTreeCollector collector = new CSharpTokenTreeCollector(factory, filePath);
-            collector.FillClasses();
+            CSharpDiagramElementsBuilder collector = new CSharpDiagramElementsBuilder(factory);
+            collector.PrintClassListInfo();
         }
     }
 }

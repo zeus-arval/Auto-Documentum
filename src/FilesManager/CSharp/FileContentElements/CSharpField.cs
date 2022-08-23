@@ -2,7 +2,7 @@
 
 namespace AD.FilesManager.CSharp.FileContentElements
 {
-    internal class CSharpField : IField
+    public class CSharpField : IField
     {
         public string Name { get; init; }
         public string Description { get; init; }

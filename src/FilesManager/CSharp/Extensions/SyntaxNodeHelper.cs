@@ -8,6 +8,11 @@ namespace AD.FilesManager.CSharp.Extensions
 {
     internal static class SyntaxNodeHelper
     {
+        /// <summary>
+        /// Tries to get parent of <paramref name="syntaxNode"/> and to put it to <paramref name="result"/>
+        /// </summary>
+        /// <typeparam name="T">Every <see cref="SyntaxNode"/></typeparam>
+        /// <returns>True, if parent was found and was put to <paramref name="result"/></returns>
         internal static bool TryGetParentSyntax<T>(SyntaxNode? syntaxNode, out T? result)
         where T : SyntaxNode
         {
@@ -42,6 +47,10 @@ namespace AD.FilesManager.CSharp.Extensions
             }
         }
 
+        /// <summary>
+        /// Tries to gets full path of class
+        /// </summary>
+        /// <returns>True, if class path was found and put to <paramref name="name"/></returns>
         internal static bool TryGetFullClassPath(ClassDeclarationSyntax? classSyntax, out string? name)
         {
             name = null;
@@ -51,7 +60,7 @@ namespace AD.FilesManager.CSharp.Extensions
             {
                 try
                 {
-                    node = FillParentName(node, out string? parentName);
+                    node = ReturnParent(node, out string? parentName);
 
                     if (parentName == string.Empty || name is null)
                     {
@@ -75,7 +84,12 @@ namespace AD.FilesManager.CSharp.Extensions
             return true;
         }
 
-        internal static SyntaxNode? FillParentName(SyntaxNode? syntaxNode, out string? parentName)
+        /// <summary>
+        /// Returns parent and fills <paramref name="parentName"/>
+        /// </summary>
+        /// <returns>Parent of <paramref name="syntaxNode"/></returns>
+        /// <exception cref="Exception">If parent is not namespace or class exception is thrown</exception>
+        internal static SyntaxNode? ReturnParent(SyntaxNode? syntaxNode, out string? parentName)
         {
             var parent = syntaxNode?.Parent;
             parentName = string.Empty;
@@ -108,6 +122,10 @@ namespace AD.FilesManager.CSharp.Extensions
             return parent;
         }
 
+        /// <summary>
+        /// recursion for returning full namespace name
+        /// </summary>
+        /// <returns>Full path to class</returns>
         internal static string CollectNameFromQualifiedNameSyntax(QualifiedNameSyntax? qualifiedNameSyntax)
         {
             if (qualifiedNameSyntax is null)
@@ -131,7 +149,10 @@ namespace AD.FilesManager.CSharp.Extensions
             return ((IdentifierNameSyntax) left).Identifier.Text;
         }
 
-
+        /// <summary>
+        /// Tries to get List<<see cref="ClassDeclarationSyntax"/>>
+        /// </summary>
+        /// <returns>True, if any <see cref="ClassDeclarationSyntax"/> was found, else false</returns>
         internal static bool TryGetClassDeclarationSyntaxis(SyntaxTree syntaxTree, out List<ClassDeclarationSyntax> classSyntaxis)
         {
             SyntaxNode? root = syntaxTree.GetRoot();
@@ -139,6 +160,10 @@ namespace AD.FilesManager.CSharp.Extensions
             return classSyntaxis.Any();
         }
 
+        /// <summary>
+        /// Tries to get the name of class
+        /// </summary>
+        /// <returns>True, if <see cref="ClassDeclarationSyntax?"/> contains a name</returns>
         internal static bool TryGetClassName(ClassDeclarationSyntax? classSyntax, out string name)
         {
             name = string.Empty;
@@ -152,7 +177,11 @@ namespace AD.FilesManager.CSharp.Extensions
             return true;
         }
 
-        internal static bool TryGetNameSpaceSyntaxis(SyntaxTree syntaxTree, out List<NamespaceDeclarationSyntax> namespaces)
+        /// <summary>
+        /// Tries to get <see cref="NamespaceDeclarationSyntax"/>
+        /// </summary>
+        /// <returns>True, if <see cref="SyntaxTree"/> contains any namespace</returns>
+        internal static bool TryGetNamespaceSyntaxis(SyntaxTree syntaxTree, out List<NamespaceDeclarationSyntax> namespaces)
         {
             namespaces = new List<NamespaceDeclarationSyntax>();
             var root = syntaxTree.GetCompilationUnitRoot();
@@ -168,6 +197,10 @@ namespace AD.FilesManager.CSharp.Extensions
             return namespaces.Count > 0;
         }
 
+        /// <summary>
+        /// Gets an Array of <see cref="CSharpField"/>
+        /// </summary>
+        /// <returns><see cref="CSharpField[]"/></returns>
         internal static CSharpField[] GetCSharpFieldArray(ClassDeclarationSyntax classSyntax)
         {
             //TODO check if all kind of properties could be used
@@ -215,6 +248,10 @@ namespace AD.FilesManager.CSharp.Extensions
             return fieldArray;
         }
 
+        /// <summary>
+        /// Gets an Array of <see cref="CSharpProperty"/>
+        /// </summary>
+        /// <returns><see cref="CSharpProperty[]"/></returns>
         internal static CSharpProperty[] GetCSharpPropertyArray(ClassDeclarationSyntax classSyntax)
         {
             //TODO check if all kind of properties could be used
@@ -249,6 +286,11 @@ namespace AD.FilesManager.CSharp.Extensions
             return propertyArray;
         }
 
+        /// <summary>
+        /// A recursion for getting a full tye name
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>Type name like: List<string[]></returns>
         private static string ReturnTypeName(TypeSyntax type)
         {
             if (type is null)
@@ -263,6 +305,10 @@ namespace AD.FilesManager.CSharp.Extensions
             else if (type is ArrayTypeSyntax arrayType)
             {
                 return string.Format(ARRAY_OPERATOR, ReturnTypeName(arrayType.ElementType));
+            }
+            else if (type is QualifiedNameSyntax qualifiedName)
+            {
+                return CollectNameFromQualifiedNameSyntax(qualifiedName);
             }
             else if (type is PredefinedTypeSyntax predefinedType)
             {
@@ -288,6 +334,10 @@ namespace AD.FilesManager.CSharp.Extensions
             return string.Empty;
         }
 
+        /// <summary>
+        /// Gets an Array of <see cref="CSharpMethod"/>
+        /// </summary>
+        /// <returns><see cref="CSharpMethod[]"/></returns>
         internal static CSharpMethod[] GetCSharpMethodArray(ClassDeclarationSyntax classSyntax)
         {
             List<MethodDeclarationSyntax> methodSyntaxis = classSyntax.DescendantNodes().OfType<MethodDeclarationSyntax>().ToList();
@@ -304,7 +354,7 @@ namespace AD.FilesManager.CSharp.Extensions
                 MethodDeclarationSyntax? methodSyntax = methodSyntaxis[i];
                 string? methodName = methodSyntax.Identifier.Text;
                 CSharpParameter[] parameters = GetCSharpParameters(methodSyntax);
-                string? returnType = (methodSyntax.ReturnType as PredefinedTypeSyntax)?.Keyword.Text;
+                string? returnType = ReturnTypeName(methodSyntax.ReturnType);
                 if (methodName is null && returnType is null)
                 {
                     continue;
@@ -316,6 +366,10 @@ namespace AD.FilesManager.CSharp.Extensions
 
         }
 
+        /// <summary>
+        /// Gets an Array of <see cref="CSharpParameter"/>
+        /// </summary>
+        /// <returns><see cref="CSharpParameter[]"/></returns>
         internal static CSharpParameter[] GetCSharpParameters(MethodDeclarationSyntax method)
         {
             var parameterSyntaxis = method.ParameterList.Parameters;
@@ -333,7 +387,7 @@ namespace AD.FilesManager.CSharp.Extensions
                 string parameterType;
                 
                 var parameter = parameterSyntaxis[i];
-                parameterType = parameter.Identifier.Text;
+                parameterType = ReturnTypeName(parameterSyntaxis[i].Type!);
 
                 if (parameter.Type is PredefinedTypeSyntax predefinedSyntax)
                 {
@@ -343,8 +397,16 @@ namespace AD.FilesManager.CSharp.Extensions
                 {
                     parameterName = identifierSyntax.Identifier.Text;
                 }
+                else if (parameter.Type is NullableTypeSyntax nullableType)
+                {
+                    parameterName = parameter.Identifier.Text;
+                }
+                else if (parameter.Type is QualifiedNameSyntax)
+                {
+                    parameterName = parameter.Identifier.Text;
+                }
 
-                parameters[i] = new CSharpParameter(parameterName, parameterType, string.Empty);
+                parameters[i] = new CSharpParameter(parameterType, parameterName, string.Empty);
             }
             return parameters;
         }

@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace HardNameRecognition
+{
+	public class HardClass
+	{
+		public IEnumerable<Person<string?>>? _persons;
+
+		public HardClass()
+		{
+			_persons = new System.Collections.IEnumerable<Person<string?>>();
+		}
+
+		public IEnumerable<Person<string?>>? ReturnPerson()
+		{
+			return _persons;
+		}
+
+		public List<Child<ILogger<Person>?>> GenerateChildren()
+		{
+			return new List<Child<ILogger<Person>?>>();
+		}
+	}
+}

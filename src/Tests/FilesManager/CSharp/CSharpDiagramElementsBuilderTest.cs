@@ -32,7 +32,7 @@ namespace Tests.FilesManager.CSharp
         [TestCase(TestName = "Test classes' extraction")]
         public void TestClassesExtraction()
         {
-            string fullPath = TEST_DIRECTORY_PATH.GoToChildsDirectory(@"TestClasses.txt");
+            string fullPath = TEST_DIRECTORY_PATH.GoToChildsDirectory(@"TestClasses");
 
             _elementsBuilder.CreateSyntaxTreeArray(fullPath);
             List<IClass> classes = _elementsBuilder.ClassesList!;
@@ -40,6 +40,25 @@ namespace Tests.FilesManager.CSharp
             List<CSharpClass> expectedClasses = InitializeExpectedClasses();
 
             CheckClasses(classes, expectedClasses);
+        }
+
+        [TestCase(TestName = "Test hard name recognition")]
+        public void TestHardNameRecognition()
+        {
+            string fullPath = TEST_DIRECTORY_PATH.GoToChildsDirectory(@"HardNameRecognition");
+
+            _elementsBuilder.CreateSyntaxTreeArray(fullPath);
+            List<IClass> classes = _elementsBuilder.ClassesList!;
+
+            Assert.That(classes.Count, Is.EqualTo(1));
+
+            IMethod[] expectedMethods = new IMethod[]
+            {
+                new CSharpMethod(Array.Empty<CSharpParameter>(), "ReturnPerson", "IEnumerable<Person<string?>>?", string.Empty),
+                new CSharpMethod(Array.Empty<CSharpParameter>(), "GenerateChildren", "List<Child<ILogger<Person>?>>", string.Empty),
+            };
+
+            CheckMethods(classes[0].Methods, expectedMethods);
         }
 
         private List<CSharpClass> InitializeExpectedClasses() 
@@ -94,16 +113,17 @@ namespace Tests.FilesManager.CSharp
 
         private void CheckClasses(List<IClass> classes, List<CSharpClass> expectedClasses)
         {
+            Assert.That(classes.Count, Is.EqualTo(expectedClasses.Count));
             for (int classNum = 0; classNum < classes.Count; classNum++)
             {
                 var actualClass = classes[classNum] as CSharpClass;
                 var expectedClass = expectedClasses[classNum];
 
-                Assert.AreEqual(actualClass.Name, expectedClass.Name);
-                Assert.AreEqual(actualClass.Description, expectedClass.Description);
-                Assert.AreEqual(actualClass.NamespaceName, expectedClass.NamespaceName);
+                Assert.That(expectedClass.Name, Is.EqualTo(actualClass!.Name));
+                Assert.That(expectedClass.Description, Is.EqualTo(actualClass.Description));
+                Assert.That(expectedClass.NamespaceName, Is.EqualTo(actualClass.NamespaceName));
 
-                CheckMethods(actualClass, expectedClass);
+                CheckMethods(actualClass.Methods, expectedClass.Methods);
                 CheckFields(actualClass, expectedClass);
                 CheckProperties(actualClass, expectedClass);
             }
@@ -135,12 +155,12 @@ namespace Tests.FilesManager.CSharp
             }
         }
 
-        private void CheckMethods(CSharpClass actualClass, CSharpClass expectedClass)
+        private void CheckMethods(IMethod[] actualMethods, IMethod[] expectedMethods)
         {
-            for (int i = 0; i < actualClass.Methods.Count(); i++)
+            for (int i = 0; i < actualMethods.Count(); i++)
             {
-                var actualMethod = actualClass.Methods[i] as CSharpMethod;
-                var expectedMethod = expectedClass.Methods[i] as CSharpMethod;
+                var actualMethod = actualMethods[i] as CSharpMethod;
+                var expectedMethod = expectedMethods[i] as CSharpMethod;
 
                 Assert.That(expectedMethod!.Description, Is.EqualTo(actualMethod!.Description));
                 Assert.That(expectedMethod.Name, Is.EqualTo(actualMethod!.Name));

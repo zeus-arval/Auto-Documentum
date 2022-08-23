@@ -306,6 +306,10 @@ namespace AD.FilesManager.CSharp.Extensions
             {
                 return string.Format(ARRAY_OPERATOR, ReturnTypeName(arrayType.ElementType));
             }
+            else if (type is QualifiedNameSyntax qualifiedName)
+            {
+                return CollectNameFromQualifiedNameSyntax(qualifiedName);
+            }
             else if (type is PredefinedTypeSyntax predefinedType)
             {
                 return predefinedType.Keyword.Text;
@@ -350,7 +354,7 @@ namespace AD.FilesManager.CSharp.Extensions
                 MethodDeclarationSyntax? methodSyntax = methodSyntaxis[i];
                 string? methodName = methodSyntax.Identifier.Text;
                 CSharpParameter[] parameters = GetCSharpParameters(methodSyntax);
-                string? returnType = (methodSyntax.ReturnType as PredefinedTypeSyntax)?.Keyword.Text;
+                string? returnType = ReturnTypeName(methodSyntax.ReturnType);
                 if (methodName is null && returnType is null)
                 {
                     continue;
@@ -383,7 +387,7 @@ namespace AD.FilesManager.CSharp.Extensions
                 string parameterType;
                 
                 var parameter = parameterSyntaxis[i];
-                parameterType = parameter.Identifier.Text;
+                parameterType = ReturnTypeName(parameterSyntaxis[i].Type!);
 
                 if (parameter.Type is PredefinedTypeSyntax predefinedSyntax)
                 {
@@ -393,8 +397,16 @@ namespace AD.FilesManager.CSharp.Extensions
                 {
                     parameterName = identifierSyntax.Identifier.Text;
                 }
+                else if (parameter.Type is NullableTypeSyntax nullableType)
+                {
+                    parameterName = parameter.Identifier.Text;
+                }
+                else if (parameter.Type is QualifiedNameSyntax)
+                {
+                    parameterName = parameter.Identifier.Text;
+                }
 
-                parameters[i] = new CSharpParameter(parameterName, parameterType, string.Empty);
+                parameters[i] = new CSharpParameter(parameterType, parameterName, string.Empty);
             }
             return parameters;
         }

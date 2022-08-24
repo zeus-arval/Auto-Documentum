@@ -68,7 +68,7 @@ namespace AD.FilesManager.Common
                     throw new EmptyFileException(filePath);
                 }
 
-                return new FileContext(fileContent, string.Empty, filePath, -1);
+                return new FileContext(fileContent, string.Empty, filePath, linesCount);
             };
         }
 

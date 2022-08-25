@@ -12,9 +12,9 @@ namespace Tests.FilesManager
         {
             public FileReaderMock(ILogger<FileReaderMock> logger) : base(logger) { }
 
-            public string ReadFileForTest(in string filePath)
+            public FileContext ReadFileForTest(in string filePath)
             {
-                return ReadFileImpl(filePath).FileContent;
+                return ReadFileImpl(filePath);
             }
             protected override void Validate(ref string fileLine)
             {
@@ -48,14 +48,19 @@ namespace Tests.FilesManager
 
         [TestCase(@"WrongFile.txt", typeof(FileNotFoundException), TestName = "Wrong File Reading")]
         [TestCase(@"TestEmptyFile.txt", typeof(FileReader.EmptyFileException), TestName = "Empty File Reading")]
-        [TestCase(@"TestFile.txt", TestName = "Test File Reading")]
-        public void TestReadFile(string filePath, Type? exceptionType = null)
+        [TestCase(@"TestFile.txt", null, 11, TestName = "Test File Reading")]
+        public void TestReadFile(string filePath, Type? exceptionType = null, int? linesCount = null)
         {
             string fullPath = TEST_DIRECTORY_PATH.GoToChildsDirectory(filePath);
             if (exceptionType is null)
             {
-                string actualFileContent = _fileReader.ReadFileForTest(fullPath);
-                Assert.That(actualFileContent, Is.EqualTo(EXPECTED_FILE_CONTENT));
+                FileContext actualContext = _fileReader.ReadFileForTest(fullPath);
+                Assert.That(actualContext.FileContent, Is.EqualTo(EXPECTED_FILE_CONTENT));
+
+                if (linesCount is not null)
+                {
+                    Assert.That(actualContext.LinesCount, Is.EqualTo(linesCount));
+                }
             }
             else
             {

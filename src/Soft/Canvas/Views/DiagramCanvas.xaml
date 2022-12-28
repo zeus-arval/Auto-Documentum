@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GoDoque.Canvas.DiagramCanvas">
+    <Grid BackgroundColor="AliceBlue">
+        <Grid.GestureRecognizers>
+            <DropGestureRecognizer AllowDrop="True" Drop="DropGestureRecognizer_Drop" DragOver="DropGestureRecognizer_DragOver" />
+        </Grid.GestureRecognizers>
+        <Border BackgroundColor="Black" WidthRequest="100" HeightRequest="100" x:Name="border">
+            <Border.GestureRecognizers>
+                <DragGestureRecognizer CanDrag="True" DragStarting="DragGestureRecognizer_DragStarting"/>
+            </Border.GestureRecognizers>
+        </Border>
+    </Grid>
+</ContentView>

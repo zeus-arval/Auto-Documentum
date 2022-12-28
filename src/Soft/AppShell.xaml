@@ -3,11 +3,11 @@
     x:Class="Soft.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Soft"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:local="clr-namespace:GoDoque"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarIsVisible="False">
 
     <ShellContent
-        Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

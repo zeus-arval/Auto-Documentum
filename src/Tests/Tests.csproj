@@ -1,25 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="TestCases\TestEmptyFile.txt" />
     <None Remove="TestCases\TestFile.txt" />
     <None Remove="TestCases\TestFileWithClasses.txt" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="TestCases\TestEmptyFile.txt" />
     <Compile Include="TestCases\TestFile.txt" />
     <Compile Include="TestCases\TestFileWithClasses.txt" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
@@ -27,10 +22,7 @@
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Factories\Aids.csproj" />
     <ProjectReference Include="..\FilesManager\FilesManager.csproj" />
   </ItemGroup>
-
 </Project>

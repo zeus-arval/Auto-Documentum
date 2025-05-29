@@ -7,10 +7,12 @@ namespace ConsoleForTesting
     {
         public static void Main(string[] args)
         {
-            string filePath = @"C:\Users\a.valdna\source\repos\TestClassReading\Test";
+            string filePath = @"C:\Users\a.valdna\source\repos\ChessGame\ChessGame\GameModels";
             MainFactory factory = new MainFactory();
             CSharpDiagramElementsBuilder collector = new CSharpDiagramElementsBuilder(factory);
+            collector.CreateSyntaxTreeArray(filePath);
             collector.PrintClassListInfo();
+            Console.ReadLine();
         }
     }
 }

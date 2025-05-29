@@ -1,5 +1,5 @@
-﻿using AD.Aids.Factories;
-using AD.FilesManager.Common;
+﻿using AD.FilesManager.Common;
+using AD.Services.Factories;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.Logging;
 
@@ -22,9 +22,9 @@ namespace AD.FilesManager.CSharp
         private readonly FileReader _filesReader;
         public readonly FilesController filesController;
 
-        public CSharpTokenTreeGenerator()
+        public CSharpTokenTreeGenerator(MainFactory mainFactory)
         {
-            MainFactory factory = new();
+            MainFactory factory = mainFactory;
 
             _logger = factory.CreateLogger<CSharpTokenTreeGenerator>();
             _filesReader = new FileReader(factory.CreateLogger<FileReader>());

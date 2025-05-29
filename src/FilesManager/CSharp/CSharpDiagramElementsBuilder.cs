@@ -1,7 +1,7 @@
-﻿using AD.Aids.Factories;
-using AD.FilesManager.Common;
+﻿using AD.FilesManager.Common;
 using AD.FilesManager.CSharp.Extensions;
 using AD.FilesManager.CSharp.FileContentElements;
+using AD.Services.Factories;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -140,7 +140,7 @@ namespace AD.FilesManager.CSharp
         public CSharpDiagramElementsBuilder(MainFactory mainFactory)
         {
             _logger = mainFactory.CreateLogger<CSharpDiagramElementsBuilder>();
-            generator = new CSharpTokenTreeGenerator();
+            generator = new CSharpTokenTreeGenerator(mainFactory);
             _syntaxTreeReader = new CSharpSyntaxTreeReader(mainFactory.CreateLogger<CSharpSyntaxTreeReader>());
             DirectoryPath = string.Empty;
         }

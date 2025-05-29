@@ -287,7 +287,7 @@ namespace AD.FilesManager.CSharp.Extensions
         }
 
         /// <summary>
-        /// A recursion for getting a full tye name
+        /// A recursion for getting a full type name
         /// </summary>
         /// <param name="type"></param>
         /// <returns>Type name like: List<string[]></returns>
